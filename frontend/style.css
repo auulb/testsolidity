@@ -1,0 +1,174 @@
+:root {
+  --bg: #0e1117;
+  --card: #161b25;
+  --card-2: #1d2430;
+  --border: #2a3342;
+  --text: #e6e9ef;
+  --muted: #8b98ad;
+  --accent: #5b8cff;
+  --accent-2: #7c5cff;
+  --green: #2ecc8f;
+  --red: #ff6b6b;
+  --yellow: #ffc857;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% -10%, #1b2438 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.app { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+
+header { text-align: center; margin-bottom: 32px; }
+h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: -0.5px; }
+.subtitle { color: var(--muted); margin: 0; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
+}
+
+.card h2 { margin: 0 0 10px; font-size: 17px; font-weight: 600; }
+.hint { color: var(--muted); font-size: 13px; margin: 0 0 14px; }
+.hint b { color: var(--text); }
+
+.kv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 14px;
+}
+.kv:last-of-type { border-bottom: none; }
+.kv span { color: var(--muted); }
+.kv code { font-size: 12px; color: var(--accent); word-break: break-all; }
+.kv.highlight strong { color: var(--green); font-size: 18px; }
+
+button {
+  font: inherit;
+  border: none;
+  border-radius: 9px;
+  padding: 11px 18px;
+  cursor: pointer;
+  transition: transform 0.08s ease, opacity 0.2s ease;
+  font-weight: 600;
+}
+button:active { transform: scale(0.98); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  width: 100%;
+  margin-top: 6px;
+}
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+button.small { padding: 6px 12px; font-size: 12px; margin-top: 10px; }
+
+textarea {
+  width: 100%;
+  min-height: 84px;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  padding: 11px 13px;
+  font: inherit;
+  resize: vertical;
+}
+textarea:focus { outline: none; border-color: var(--accent); }
+
+input,
+select {
+  width: 100%;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  padding: 11px 13px;
+  font: inherit;
+  margin-bottom: 2px;
+}
+input:focus,
+select:focus { outline: none; border-color: var(--accent); }
+.row select { width: auto; flex: 1; margin: 0; }
+
+/* 安全警告框：内置开发钱包那张卡上用它来强调"别填真实私钥" */
+.danger {
+  font-size: 13px;
+  color: var(--muted);
+  border-left: 3px solid var(--red);
+  background: rgba(255, 107, 107, 0.07);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 12px;
+  margin: 0 0 14px;
+}
+.danger b { color: var(--red); }
+
+.row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 12px; }
+.row small { color: var(--muted); }
+.row button { width: auto; margin: 0; white-space: nowrap; }
+
+.status {
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--card-2);
+  color: var(--muted);
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+
+.messages { display: flex; flex-direction: column; gap: 10px; }
+.msg {
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 9px;
+  padding: 12px 14px;
+}
+.msg .content { font-size: 15px; margin-bottom: 6px; word-break: break-word; }
+.msg .meta { font-size: 11px; color: var(--muted); font-family: ui-monospace, Menlo, monospace; }
+.empty { color: var(--muted); font-size: 13px; text-align: center; padding: 14px 0; margin: 0; }
+
+.log {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #0a0d13;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px;
+}
+.log-entry { padding: 5px 0; border-bottom: 1px solid #161b25; }
+.log-entry:last-child { border-bottom: none; }
+.log-entry .t { color: var(--muted); margin-right: 8px; }
+.log-entry.ok .m { color: var(--green); }
+.log-entry.err .m { color: var(--red); }
+.log-entry.info .m { color: var(--accent); }
+.log-entry.pending .m { color: var(--yellow); }
+
+.warning { border-color: var(--yellow); }
+.warning a { color: var(--yellow); }
+.warning ol { color: var(--muted); font-size: 13px; margin: 8px 0 0; padding-left: 20px; }
+
+footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 24px; }
+footer code { color: var(--accent); }
+
+.hidden { display: none !important; }

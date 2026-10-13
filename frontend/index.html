@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CryptoStarter · 我的第一个 dApp</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>🔗 CryptoStarter</h1>
+      <p class="subtitle">你的第一个链上应用：领取代币 → 付费留言</p>
+    </header>
+
+    <!-- 没装 MetaMask 时显示 -->
+    <section id="no-wallet" class="card warning hidden">
+      <h2>⚠️ 没有检测到钱包</h2>
+      <p>这个页面需要 MetaMask 才能和区块链通信。</p>
+      <ol>
+        <li>安装 <a href="https://metamask.io/download/" target="_blank" rel="noreferrer">MetaMask 浏览器插件</a></li>
+        <li>刷新本页面</li>
+        <li>按 README 里的步骤把网络切到 Localhost 31337</li>
+      </ol>
+    </section>
+
+    <!-- 连接钱包 -->
+    <section id="connect-card" class="card">
+      <h2>第 1 步 · 连接钱包</h2>
+      <p class="hint">
+        钱包 = 你的链上身份。地址可以随便公开，私钥绝对不能给任何人。
+      </p>
+      <button id="btn-connect" class="primary">连接 MetaMask</button>
+    </section>
+
+    <!-- 不想用 / 用不了 MetaMask？用这个内置钱包 -->
+    <section id="dev-wallet-card" class="card">
+      <h2>🛠 内置开发钱包（不用 MetaMask）</h2>
+      <p class="hint">
+        MetaMask 的本质只有三件事：<b>保管私钥 → 签名 → 广播</b>。
+        这个内置钱包把这三件事用一百来行重新实现了一遍。它和 MetaMask 遵循同一个接口
+        （EIP-1193），所以下面的页面代码一行都没改 —— 它根本不知道自己在跟谁说话。
+      </p>
+      <p class="danger">
+        ⚠️ <b>只能用于本地测试链。</b>下面这些私钥全世界都知道、里面只有假币。
+        绝对不要填入你的真实私钥 —— 网页本就不该接触私钥，这正是我们需要 MetaMask 的原因。
+      </p>
+      <div class="row">
+        <select id="dev-account"></select>
+        <button id="btn-dev-connect" class="primary">使用内置钱包</button>
+      </div>
+      <p class="hint" style="margin-top: 12px">或者粘贴一个私钥（仅限本地测试）：</p>
+      <input id="dev-key" type="password" placeholder="0x…（64 位十六进制）" />
+      <button id="btn-dev-key" class="ghost small">用这个私钥</button>
+      <div id="dev-status" class="status"></div>
+    </section>
+
+    <!-- 主界面 -->
+    <main id="dashboard" class="hidden">
+      <section class="card">
+        <h2>我的钱包</h2>
+        <div class="kv"><span>地址</span><code id="my-address">-</code></div>
+        <div class="kv"><span>网络</span><strong id="my-network">-</strong></div>
+        <div class="kv"><span>ETH 余额（付 gas 用）</span><strong id="my-eth">-</strong></div>
+        <div class="kv highlight"><span>LEARN 余额</span><strong id="my-learn">-</strong></div>
+        <button id="btn-refresh" class="ghost small">刷新</button>
+      </section>
+
+      <section class="card">
+        <h2>第 2 步 · 领取代币（水龙头）</h2>
+        <p class="hint">每 24 小时可以免费领 10 枚 LEARN。这笔交易要花一点点 ETH 当 gas。</p>
+        <div id="faucet-status" class="status">-</div>
+        <button id="btn-faucet" class="primary">领取 10 LEARN</button>
+      </section>
+
+      <section class="card">
+        <h2>第 3 步 · 付费留言</h2>
+        <p class="hint">
+          一条留言 1 LEARN。合约不能直接拿走你的币，所以流程是两步：
+          <b>先授权(approve)，再留言(post)</b>。点下面的按钮会自动帮你走完。
+        </p>
+        <div class="kv"><span>当前已授权额度</span><strong id="my-allowance">-</strong></div>
+        <textarea id="message-input" maxlength="200" placeholder="说点什么上链吧（最多 200 字）…"></textarea>
+        <div class="row">
+          <small id="char-count">0 / 200</small>
+          <button id="btn-post" class="primary">花 1 LEARN 留言</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>链上留言墙</h2>
+        <p class="hint">这些数据存在区块链上，全世界都能读到，而且删不掉。</p>
+        <div id="messages" class="messages"><p class="empty">还没有人留言，来当第一个吧。</p></div>
+      </section>
+    </main>
+
+    <!-- 交易日志 -->
+    <section id="log-card" class="card hidden">
+      <h2>交易日志</h2>
+      <p class="hint">每一步链上操作都会记在这里。真实 dApp 不会给用户看这么细，但这是最好的学习材料。</p>
+      <div id="log" class="log"></div>
+    </section>
+
+    <footer>
+      <span id="contract-info"></span>
+    </footer>
+  </div>
+
+  <!-- ethers.js：浏览器里跟区块链对话的库，由本地服务器从 node_modules 提供 -->
+  <script src="/vendor/ethers.umd.min.js"></script>
+  <!-- 合约地址和 ABI，由 npm run deploy 自动生成 -->
+  <script src="./contracts.js"></script>
+  <!-- 内置开发钱包：可选的 MetaMask 替代品，必须在 app.js 之前加载 -->
+  <script src="./localwallet.js"></script>
+  <!-- 我们的业务逻辑 -->
+  <script src="./app.js"></script>
+</body>
+</html>
